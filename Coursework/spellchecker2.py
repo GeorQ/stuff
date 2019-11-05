@@ -6,14 +6,14 @@ while True:
 
 	for x in sentense: # This loop cheack for alpha chars in words and if it now alpha char it delete it
 		if x not in alpha_char:
-			sentense = sentense.replace(x, "") 
+			sentense = sentense.replace(x, "")
 
 	print (sentense, "\n")
 
 	sentense = sentense.split() # split sentense to the list of word in order to work with each of them
-
-	dictionary = open("01_EnglishWords.txt", "rt") 
-	test = dictionary.read() #put all words from file 0_1EnglishWords.txt inside the var "test" 
+	
+	dictionary = open("01_EnglishWords.txt", "rt")
+	test = dictionary.read() #put all words from file 0_1EnglishWords.txt inside the var "test"
 	test = test.strip() #deleate space from beginig and end?
 	test = test.split() #slpit all words in list
 
@@ -23,7 +23,7 @@ while True:
 
 	total = len(sentense)
 
-	for x in sentense: # Loop will 
+	for x in sentense: # Loop will
 		if x in test: #check for every word in sentense to be in dictionaty or not
 			correct += 1
 			print(x + " spelt correctly")
@@ -41,10 +41,9 @@ while True:
 	if answer == "q" or answer == "Q":
 		break
 	else:
-		continue 
+		continue
 
 
 
 
 input("Enter")
-
