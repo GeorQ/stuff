@@ -125,3 +125,6 @@ print("\n\n\n")
 FillingTheRest()
 DisplayGrid()
 print("\n Try to find all these words: ", guess_words)
+
+
+input("Enter")
