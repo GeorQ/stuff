@@ -1,9 +1,45 @@
-from tkinter import *
+def lol():
+	print ("hello")
+	def lol2():
+		print("yes")
+
+	lol2()
+lol()
 
 
-window = Tk()
 
-window.title("Game")
-window.geometry("500x500")
 
-window.mainloop()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
