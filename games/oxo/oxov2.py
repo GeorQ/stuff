@@ -207,21 +207,21 @@ def Easy():
 
 	def handle_button_click(button_number):
 		global counter 
-		moves.append(button_number)
 		print("Button ", button_number, "was clicked")
 
-
-		square[button_number].configure(image=player1_taken,
-		                            command=square_taken)
-	
-		update_move(button_number, 1)
-		print("hello")
-		sleep(1)
-		ai_generator()
-
+		if counter % 2 == 0:
+			square[button_number].configure(image=player1_taken,
+			                            command=square_taken)
+			moves.append(button_number)
+			update_move(button_number, 1)
+			counter += 1
+		else:
+			ai_generator()
+			counter += 1
 
 	def ai_generator():
 		square_num = ai_move()
+		sleep(1)
 		square[square_num].configure(image=player2_taken,
 			                            command=square_taken)
 		update_move(square_num, 2)
