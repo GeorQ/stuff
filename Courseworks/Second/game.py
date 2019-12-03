@@ -1,4 +1,10 @@
 from tkinter import * 
+import hashlib 
+
+
+
+
+
 
 def menu():
 	def bye():
@@ -7,7 +13,10 @@ def menu():
 	global menu
 	name = nick
 	menu = Tk()
-	menu.geometry("1920x1080")
+	ws = menu.winfo_screenwidth()
+	hs = menu.winfo_screenheight()
+	menu.geometry(("%dx%d" % (ws,hs)))
+	menu.state('zoomed')
 	label = Label(menu, bg ="#012", width = "200", height = "200")
 	label.pack(side = "top", fill = "x")
 	text = "Welcome to the Game\n" + name
@@ -51,8 +60,9 @@ def register():
 		info = info.split()
 		nick = info[0]
 		password2 =  info[1]
+		hashed_pass = hashlib.md5(password.encode()).hexdigest()
 
-		if (nickname == nick) and (password == password2):
+		if (nickname == nick) and (hashed_pass == password2):
 			go_into.destroy()
 			register.destroy()
 			menu()
@@ -64,18 +74,21 @@ def register():
 
 
 	def reg():
-		nickname = entry1.get()
-		password = entry2.get()
+		nickname = cre_login.get()
+		password = cre_pass.get()
+		hashed_pass = hashlib.md5(password.encode()).hexdigest()
+
 		file = open("users/nicknames.txt")
 		nicks = file.read().split()
 
 		if (password == "") or (nickname == "") or (nickname in nicks):
-			entry1.delete(0, "end")
-			entry2.delete(0, "end")
+			cre_login.delete(0, "end")
+			cre_pass.delete(0, "end")
+
 		else:
 			name = "users/" + nickname + ".txt"
 			file = open(name, "w")
-			text = nickname + "\n" + str(password)
+			text = nickname + "\n" + str(hashed_pass)
 			file.write(text)
 			file.close()
 			file = open("users/nicknames.txt", "a")
@@ -93,11 +106,14 @@ def register():
 	
 	def sign_up():
 		# register.destroy()
-		global entry1, entry2, registerv2
+		global cre_login, cre_pass, registerv2
 		registerv2 = Toplevel()
 		# file = open("users/1", "w")
 		# file.write("loool")
-		registerv2.geometry("1920x1080")
+		ws = registerv2.winfo_screenwidth()
+		hs = registerv2.winfo_screenheight()
+		registerv2.geometry(("%dx%d" % (ws,hs)))
+		registerv2.state('zoomed')
 		label = Label(registerv2, bg ="#012", width = "200", height = "200")
 		label.pack(fill = "x")
 
@@ -106,13 +122,13 @@ def register():
 
 		label1 = Label(frame, text = "Enter your nickname",font=("Courier", 20), fg = "white", bg = "gray")
 		label1.grid(row = 0, column = 0, padx = 2, pady = 2)
-		entry1 = Entry(frame, width = 10, font=("Courier", 20), bg = "#736d84", fg = "white")
-		entry1.grid(row = 0, column = 1)
+		cre_login = Entry(frame, width = 10, font=("Courier", 20), bg = "#736d84", fg = "white")
+		cre_login.grid(row = 0, column = 1)
 
 		label2 = Label(frame, text = "Enter your password",font=("Courier", 20), fg = "white", bg = "gray")
 		label2.grid(row = 1, column = 0, padx = 2, pady = 2)
-		entry2 = Entry(frame, width = 10, font=("Courier", 20), bg = "#736d84", fg = "white")
-		entry2.grid(row = 1, column = 1, pady = 20)
+		cre_pass = Entry(frame, width = 10, font=("Courier", 20), bg = "#736d84", fg = "white", show = "*")
+		cre_pass.grid(row = 1, column = 1, pady = 20)
 
 		button = Button(frame, bg ="grey", width = "20", height = "2", text = "Sign Up", font=("Courier", 20), fg = "white", command = reg)
 		button.grid(row = 2, columnspan = 2 ,pady = 2)
@@ -123,8 +139,10 @@ def register():
 		global entry3, entry4, go_into
 
 		go_into = Toplevel()
-
-		go_into.geometry("1920x1080")
+		ws = go_into.winfo_screenwidth()
+		hs = go_into.winfo_screenheight()
+		go_into.geometry(("%dx%d" % (ws,hs)))
+		go_into.state('zoomed')
 		label = Label(go_into, bg ="#012", width = "200", height = "200")
 		label.pack(fill = "x")
 
@@ -147,21 +165,13 @@ def register():
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 	global register
 	register = Tk()
-	register.geometry("1920x1080")
+	ws = register.winfo_screenwidth()
+	hs = register.winfo_screenheight()
+	register.geometry(("%dx%d" % (ws,hs)))
+	# register.attributes('-fullscreen', True)
+	register.state('zoomed')
 	label = Label(register, bg ="#012", width = "200", height = "200")
 	label.pack(side = "top", fill = "x")
 	welcome = Label(register, bg ="#012", text = "Welcome to PUBG", font=("Courier", 44), fg = "white")
