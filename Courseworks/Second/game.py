@@ -1,7 +1,6 @@
 from tkinter import * 
 import hashlib 
-
-
+import time
 
 
 
@@ -26,7 +25,7 @@ def menu():
 	frame = Frame(menu, bg = "#012")
 	frame.place(x = "800", y ="360")
 
-	button1 = Button(frame, bg ="grey", width = "20", height = "2", text = "Start the game!", font=("Courier", 20), fg = "white")
+	button1 = Button(frame, bg ="grey", width = "20", height = "2", text = "Start the game!", font=("Courier", 20), fg = "white", command = start)
 	button1.grid(row = 0, column = 0, pady = 2)
 
 	button2 = Button(frame, bg ="grey", width = "20", height = "2", text = "Choose the level", font=("Courier", 20), fg = "white")
@@ -49,9 +48,9 @@ def menu():
 def register():
 	global register
 	def check():
-		global nick
-		nickname = entry3.get()
-		password = entry4.get()
+		global nick, nickname
+		nickname = ex_login.get()
+		password = ex_pass.get()
 
 		text = "users/" + nickname + ".txt"
 		file = open(text)
@@ -81,13 +80,13 @@ def register():
 		file = open("users/nicknames.txt")
 		nicks = file.read().split()
 
+		file = open(name, "w")
 		if (password == "") or (nickname == "") or (nickname in nicks):
 			cre_login.delete(0, "end")
 			cre_pass.delete(0, "end")
 
 		else:
 			name = "users/" + nickname + ".txt"
-			file = open(name, "w")
 			text = nickname + "\n" + str(hashed_pass)
 			file.write(text)
 			file.close()
@@ -105,6 +104,8 @@ def register():
 		register.destroy()
 	
 	def sign_up():
+		def go_back():
+			registerv2.destroy()
 		# register.destroy()
 		global cre_login, cre_pass, registerv2
 		registerv2 = Toplevel()
@@ -113,7 +114,7 @@ def register():
 		ws = registerv2.winfo_screenwidth()
 		hs = registerv2.winfo_screenheight()
 		registerv2.geometry(("%dx%d" % (ws,hs)))
-		registerv2.state('zoomed')
+		registerv2.attributes('-fullscreen', True)
 		label = Label(registerv2, bg ="#012", width = "200", height = "200")
 		label.pack(fill = "x")
 
@@ -132,35 +133,43 @@ def register():
 
 		button = Button(frame, bg ="grey", width = "20", height = "2", text = "Sign Up", font=("Courier", 20), fg = "white", command = reg)
 		button.grid(row = 2, columnspan = 2 ,pady = 2)
+		button = Button(frame, bg ="grey", width = "20", height = "2", text = "Go back", font=("Courier", 20), fg = "white", command = go_back)
+		button.grid(row = 3, columnspan = 2 , pady = 2)
 		registerv2.mainloop()
 
 	def sign_in():
-
-		global entry3, entry4, go_into
+		def go_back():
+			go_into.destroy()
+		global ex_login, ex_pass, go_into
 
 		go_into = Toplevel()
+
 		ws = go_into.winfo_screenwidth()
 		hs = go_into.winfo_screenheight()
 		go_into.geometry(("%dx%d" % (ws,hs)))
-		go_into.state('zoomed')
+		go_into.attributes('-fullscreen', True)
 		label = Label(go_into, bg ="#012", width = "200", height = "200")
 		label.pack(fill = "x")
 
 		frame = Frame(go_into, bg = "#012")
 		frame.place(x = "700", y ="360")
 
-		label1 = Label(frame, text = "Enter your nickname",font=("Courier", 20), fg = "white", bg = "gray")
-		label1.grid(row = 0, column = 0, padx = 2, pady = 2)
-		entry3 = Entry(frame, width = 10, font=("Courier", 20), bg = "#736d84", fg = "white")
-		entry3.grid(row = 0, column = 1)
+		l_log = Label(frame, text = "Enter your nickname",font=("Courier", 20), fg = "white", bg = "gray")
+		l_log.grid(row = 0, column = 0, padx = 2, pady = 2)
+		ex_login = Entry(frame, width = 10, font=("Courier", 20), bg = "#736d84", fg = "white")
+		ex_login.grid(row = 0, column = 1)
 
-		label2 = Label(frame, text = "Enter your password",font=("Courier", 20), fg = "white", bg = "gray")
-		label2.grid(row = 1, column = 0, padx = 2, pady = 2)
-		entry4 = Entry(frame, width = 10, font=("Courier", 20), bg = "#736d84", fg = "white")
-		entry4.grid(row = 1, column = 1, pady = 20)
+		l_pass = Label(frame, text = "Enter your password",font=("Courier", 20), fg = "white", bg = "gray")
+		l_pass.grid(row = 1, column = 0, padx = 2, pady = 2)
+		ex_pass = Entry(frame, width = 10, font=("Courier", 20), bg = "#736d84", fg = "white", show = "*")
+		ex_pass.grid(row = 1, column = 1, pady = 20)
 
 		button = Button(frame, bg ="grey", width = "20", height = "2", text = "Sign In", font=("Courier", 20), fg = "white", command = check)
 		button.grid(row = 2, columnspan = 2 , pady = 2)
+
+		button = Button(frame, bg ="grey", width = "20", height = "2", text = "Go back", font=("Courier", 20), fg = "white", command = go_back)
+		button.grid(row = 3, columnspan = 2 , pady = 2)
+
 		go_into.mainloop()
 
 
@@ -170,14 +179,14 @@ def register():
 	ws = register.winfo_screenwidth()
 	hs = register.winfo_screenheight()
 	register.geometry(("%dx%d" % (ws,hs)))
-	# register.attributes('-fullscreen', True)
+	register.attributes('-fullscreen', True)
 	register.state('zoomed')
 	label = Label(register, bg ="#012", width = "200", height = "200")
 	label.pack(side = "top", fill = "x")
-	welcome = Label(register, bg ="#012", text = "Welcome to PUBG", font=("Courier", 44), fg = "white")
-	welcome.place(x ="700", y = "130")
+	welcome = Label(register, bg ="#012", text = "Welcome to Space Defender", font=("Courier", 44), fg = "white")
+	welcome.place(x = ws/4, y = "130")
 	frame = Frame(register, bg = "#012")
-	frame.place(x = "800", y ="360")
+	frame.place(x = ws/2 - 200, y ="360")
 	button1 = Button(frame, bg ="grey", width = "20", height = "2", text = "Sign Up", font=("Courier", 20), fg = "white", command  = sign_up)
 	button1.grid(row = 0, column = 0, pady = 2)
 	button2 = Button(frame, bg ="grey", width = "20", height = "2", text = "Sign In", font=("Courier", 20), fg = "white", command = sign_in)
@@ -186,4 +195,106 @@ def register():
 	button3.grid(row = 5, column = 0, pady = 2)
 	register.mainloop()
 
+def start():
+	menu.destroy()
+	start_game()
+
+
+
+
+
+def start_game():
+	def exit():
+		gamewin.destroy()
+	def leftKey(event):
+		canvas.move(hero, -10, 0)
+	def rightKey(event):
+		canvas.move(hero, 10, 0)
+	def upKey(event):
+		canvas.move(hero, 0, -10)
+	def downKey(event):
+		canvas.move(hero, 0, 10)
+
+
+
+
+	gamewin = Tk()
+	gamewin.focus_force()
+	mainhero = PhotoImage(file = "images/mainhero.png")
+	ws = gamewin.winfo_screenwidth()
+	hs = gamewin.winfo_screenheight()
+	gamewin.geometry(("%dx%d" % (ws+10 ,hs + 10)))
+	gamewin.attributes('-fullscreen', True)
+	gamewin.attributes("-topmost", True)
+	nhs = hs - 100
+	canvas = Canvas(gamewin, height = nhs, width = ws, bg = "#af854c")
+	hero = canvas.create_image(500,500, image = mainhero)
+	canvas.move(hero, 100, 100)
+
+	canvas.bind("<Left>", leftKey)
+	canvas.bind("<Right>", rightKey)
+	canvas.bind("<Up>", upKey)
+	canvas.bind("<Down>", downKey)
+	canvas.focus_set()
+	canvas.pack()
+	buttonex = Button(gamewin,height= 5, text = "Save and Exit" , font=("Courier", 20) ,bg = "grey", command = exit)
+	buttonex.pack(side = "right")
+	gamewin.after(1, lambda: gamewin.focus_force()) #In order to set focus on the main window
+	gamewin.mainloop()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
 register()
