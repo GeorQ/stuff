@@ -15,21 +15,22 @@ def menu():
 	ws = menu.winfo_screenwidth()
 	hs = menu.winfo_screenheight()
 	menu.geometry(("%dx%d" % (ws,hs)))
-	menu.state('zoomed')
+	menu.attributes('-fullscreen', True)
 	label = Label(menu, bg ="#012", width = "200", height = "200")
 	label.pack(side = "top", fill = "x")
 	text = "Welcome to the Game\n" + name
 	welcome = Label(menu, bg ="#012", text = text, font=("Courier", 44), fg = "white")
-	welcome.place(x ="630", y = "130")
+	welcome.place(x =ws/3 - 30, y = "130")
 
 	frame = Frame(menu, bg = "#012")
-	frame.place(x = "800", y ="360")
+	frame.place(x = ws/2 - 150, y ="360")
 
-	button1 = Button(frame, bg ="grey", width = "20", height = "2", text = "Start the game!", font=("Courier", 20), fg = "white", command = start)
-	button1.grid(row = 0, column = 0, pady = 2)
+	new_game = Button(frame, bg ="grey", width = "20", height = "2", text = "Start the game!", font=("Courier", 20), fg = "white", command = start)
+	new_game.grid(row = 0, column = 0, pady = 2)
 
-	button2 = Button(frame, bg ="grey", width = "20", height = "2", text = "Choose the level", font=("Courier", 20), fg = "white")
-	button2.grid(row = 1, column = 0, pady = 2)
+
+	continue_game = Button(frame, bg ="grey", width = "20", height = "2", text = "Continue", font=("Courier", 20), fg = "white", state = DISABLED)
+	continue_game.grid(row = 1, column = 0, pady = 2)
 
 	button3 = Button(frame, bg ="grey", width = "20", height = "2", text = "Shop and meditation", font=("Courier", 20), fg = "white")
 	button3.grid(row = 2, column = 0, pady = 2)
@@ -204,6 +205,9 @@ def start():
 
 
 def start_game():
+	health = 100
+	money = 0
+	exp = 0
 	def exit():
 		gamewin.destroy()
 	def leftKey(event):
@@ -228,17 +232,39 @@ def start_game():
 	gamewin.attributes("-topmost", True)
 	nhs = hs - 100
 	canvas = Canvas(gamewin, height = nhs, width = ws, bg = "#af854c")
-	hero = canvas.create_image(500,500, image = mainhero)
-	canvas.move(hero, 100, 100)
+
 
 	canvas.bind("<Left>", leftKey)
 	canvas.bind("<Right>", rightKey)
 	canvas.bind("<Up>", upKey)
 	canvas.bind("<Down>", downKey)
 	canvas.focus_set()
+	mainscene = PhotoImage(file = "images/main.jpg")
+	canvas.create_image(0,0, anchor = NW, image = mainscene)
 	canvas.pack()
 	buttonex = Button(gamewin,height= 5, text = "Save and Exit" , font=("Courier", 20) ,bg = "grey", command = exit)
 	buttonex.pack(side = "right")
+	buttonpause = Button(gamewin,height= 5, width = 10,text = "Pause" , font=("Courier", 20) ,bg = "grey", command = exit)
+	buttonpause.pack(side = "right")
+	shop = Button(gamewin,height= 5, width = 10, text = "shop" , font=("Courier", 20) ,bg = "grey", command = exit)
+	shop.pack(side = "right")
+
+	health_text = "HP: " + str(health) + "/100"
+	money_text = "Money: " + str(money) + "/100"
+	exp_text = "Exp: " + str(exp) + "/100"
+
+	exp = Label(gamewin, height = 5, width = 14, text = exp_text, font=("Courier", 20) ,bg = "grey")
+	exp.pack(side = "right")
+	money = Label(gamewin, height = 5, width = 14, text = money_text, font=("Courier", 20) ,bg = "grey")
+	money.pack(side = "right", padx = 3)
+	health = Label(gamewin, height = 5, width = 14, text = health_text, font=("Courier", 20) ,bg = "grey")
+	health.pack(side = "right")
+	hero = canvas.create_image(500,500, image = mainhero)
+	canvas.move(hero, 100, 100)
+	first = Button(gamewin,height= 5, text = "First ability" , font=("Courier", 20) ,bg = "grey", command = exit)
+	first.pack(side = "left")
+	second = Button(gamewin,height= 5, text = "Second Ability" , font=("Courier", 20) ,bg = "grey", command = exit)
+	second.pack(side = "left")
 	gamewin.after(1, lambda: gamewin.focus_force()) #In order to set focus on the main window
 	gamewin.mainloop()
 
