@@ -1,7 +1,7 @@
 from tkinter import * 
 import hashlib 
 import time
-
+from random import randint
 
 
 
@@ -49,7 +49,7 @@ def menu():
 def register():
 	global register
 	def check():
-		global nick, nickname
+		global nick, nickname, healt, exp, score, money, bul_speed 
 		nickname = ex_login.get()
 		password = ex_pass.get()
 
@@ -63,6 +63,11 @@ def register():
 		hashed_pass = hashlib.md5(password.encode()).hexdigest()
 
 		if (nickname == nick) and (hashed_pass == password2):
+			healt = info[2]
+			exp = info[3]
+			score = info[4]
+			money = info[5]
+			bul_speed = info[6]
 			go_into.destroy()
 			register.destroy()
 			menu()
@@ -81,14 +86,16 @@ def register():
 		file = open("users/nicknames.txt")
 		nicks = file.read().split()
 
-		file = open(name, "w")
+
 		if (password == "") or (nickname == "") or (nickname in nicks):
 			cre_login.delete(0, "end")
 			cre_pass.delete(0, "end")
 
 		else:
+
 			name = "users/" + nickname + ".txt"
-			text = nickname + "\n" + str(hashed_pass)
+			file = open(name, "w")
+			text = nickname + "\n" + str(hashed_pass) + "\n" + "100" + "\n" + "0" + "\n" + "0" "\n" + "0" + "\n" + "1"  # 0) nick, 1) pass, 2) healt, 3) exp, 4) score, 5) money, 6) speed of bullet
 			file.write(text)
 			file.close()
 			file = open("users/nicknames.txt", "a")
@@ -205,20 +212,82 @@ def start():
 
 
 def start_game():
-	health = 100
-	money = 0
-	exp = 0
+
+	print(nickname)
+
+
+
+
+
+
+
+	#defining vars from the file 
+	global shoot_speed, buttonpause, nick, healt, exp, score, money, bul_speed 
+	number_shoots = 10
+	health = healt
+	# money = 0
+	# exp
+	score = int(score)
+	shoot_speed = int(bul_speed)
+
+	#all list which will be used 
+	shoot_id = []
+	enemy_list = []
+	def unpause():
+		global shoot_speed
+		buttonpause.config(text = "Pause")
+		buttonpause.config(command = pause)
+		shoot_speed = paus_shoot_sp
+
+
+	def pause():
+		global shoot_speed, paus_shoot_sp
+		paus_shoot_sp = shoot_speed
+		shoot_speed = 0
+
+
+		buttonpause.config(text = "Unpause")
+		buttonpause.config(command = unpause)
+			
+
 	def exit():
 		gamewin.destroy()
 	def leftKey(event):
-		canvas.move(hero, -10, 0)
+		canvas.move(hero, -20, 0)
 	def rightKey(event):
-		canvas.move(hero, 10, 0)
-	def upKey(event):
+		canvas.move(hero, 20, 0)
+	# def upKey(event):
 		canvas.move(hero, 0, -10)
-	def downKey(event):
+	# def downKey(event):
 		canvas.move(hero, 0, 10)
+	def move_shoot():
+		for i in range(len(shoot_id)):
+			canvas.move(shoot_id[i], 0, -shoot_speed)
+		update = canvas.after(5, move_shoot)
+		
 
+	def create_enemy():
+		print(score)
+		if score < 20:
+			randX = randint(400, ws - 400)
+			# randX = 500		
+			consY = -70
+			enemy = canvas.create_oval(25, 25, 100, 100, fill = "#631c1c")
+			canvas.move(enemy, randX, consY)
+		canvas.after(1000, create_enemy)
+
+
+
+	def shoot(event):
+		if len(shoot_id) < number_shoots:
+			pos = canvas.coords(hero)
+			print(pos)
+			x = pos[0]
+			y = pos[1] - 20
+			bullet = canvas.create_oval(x - 10, y - 10, x + 10, y + 10, fill = "yellow")
+			shoot_id.append(bullet)
+		
+			
 
 
 
@@ -233,18 +302,18 @@ def start_game():
 	nhs = hs - 100
 	canvas = Canvas(gamewin, height = nhs, width = ws, bg = "#af854c")
 
-
+	canvas.bind("<space>", shoot)
 	canvas.bind("<Left>", leftKey)
 	canvas.bind("<Right>", rightKey)
-	canvas.bind("<Up>", upKey)
-	canvas.bind("<Down>", downKey)
+	# canvas.bind("<Up>", upKey)
+	# canvas.bind("<Down>", downKey)
 	canvas.focus_set()
 	mainscene = PhotoImage(file = "images/main.jpg")
 	canvas.create_image(0,0, anchor = NW, image = mainscene)
 	canvas.pack()
 	buttonex = Button(gamewin,height= 5, text = "Save and Exit" , font=("Courier", 20) ,bg = "grey", command = exit)
 	buttonex.pack(side = "right")
-	buttonpause = Button(gamewin,height= 5, width = 10,text = "Pause" , font=("Courier", 20) ,bg = "grey", command = exit)
+	buttonpause = Button(gamewin,height= 5, width = 10,text = "Pause" , font=("Courier", 20) ,bg = "grey", command = pause)
 	buttonpause.pack(side = "right")
 	shop = Button(gamewin,height= 5, width = 10, text = "shop" , font=("Courier", 20) ,bg = "grey", command = exit)
 	shop.pack(side = "right")
@@ -259,12 +328,18 @@ def start_game():
 	money.pack(side = "right", padx = 3)
 	health = Label(gamewin, height = 5, width = 14, text = health_text, font=("Courier", 20) ,bg = "grey")
 	health.pack(side = "right")
-	hero = canvas.create_image(500,500, image = mainhero)
-	canvas.move(hero, 100, 100)
+	hero = canvas.create_image(0,0, image = mainhero)
+	canvas.move(hero, ws/2, hs - 180)
 	first = Button(gamewin,height= 5, text = "First ability" , font=("Courier", 20) ,bg = "grey", command = exit)
 	first.pack(side = "left")
 	second = Button(gamewin,height= 5, text = "Second Ability" , font=("Courier", 20) ,bg = "grey", command = exit)
 	second.pack(side = "left")
+
+	move_shoot()
+	create_enemy()
+
+
+
 	gamewin.after(1, lambda: gamewin.focus_force()) #In order to set focus on the main window
 	gamewin.mainloop()
 
@@ -322,5 +397,4 @@ def start_game():
 
 
 
-	
 register()
